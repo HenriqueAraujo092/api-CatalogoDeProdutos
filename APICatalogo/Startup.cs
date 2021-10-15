@@ -27,10 +27,16 @@ namespace APICatalogo
         {
             string mySqlConnection = Configuration.GetConnectionString("DefaultConnection");
 
+            // Conexao com o banco
             services.AddDbContext<AppDbContext>(options =>
                 options.UseMySql(mySqlConnection, ServerVersion.AutoDetect(mySqlConnection))
                 );
-            services.AddControllers().AddNewtonsoftJson();
+
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                // Fazendo com que ignore a referencia em loop para trazer os relacionamentos de uma tabela
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
             services.AddRazorPages();
         }
 
